@@ -112,8 +112,6 @@ html[lang="ar"] .logo__sub{letter-spacing:0;margin-top:7px}
 
 /* Hero */
 .hero{position:relative;background:var(--emerald);color:#fff;overflow:hidden}
-.hero__pattern{position:absolute;inset:0;width:100%;height:100%;opacity:.13;pointer-events:none;-webkit-mask-image:linear-gradient(90deg,transparent 25%,#000 85%);mask-image:linear-gradient(90deg,transparent 25%,#000 85%)}
-[dir="rtl"] .hero__pattern{-webkit-mask-image:linear-gradient(270deg,transparent 25%,#000 85%);mask-image:linear-gradient(270deg,transparent 25%,#000 85%)}
 .hero__in{position:relative;padding-block:56px 36px}
 .slides{display:grid}
 .slide{grid-area:1/1;display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center;opacity:0;visibility:hidden;transition:opacity .7s ease,visibility 0s linear .7s}
@@ -231,7 +229,6 @@ html[lang="ar"] .bars__title{line-height:1.45}
 html[lang="ar"] .panel h3{line-height:1.4}
 .panel p{margin:0 0 24px;opacity:.85;max-width:32ch}
 .panel__art svg{width:100%;height:auto}
-.panel__pattern{position:absolute;inset:0;width:100%;height:100%;opacity:.1;pointer-events:none}
 .panel > div{position:relative}
 
 /* Journal */
@@ -255,8 +252,6 @@ html[lang="ar"] .post__title{line-height:1.5}
 /* Newsletter */
 .nlwrap{padding-block:72px}
 .nl{position:relative;overflow:hidden;background:var(--emerald);color:#fff;border-radius:var(--radius-l);padding:48px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px;align-items:center}
-.nl__pattern{position:absolute;inset:0;width:100%;height:100%;opacity:.12;pointer-events:none;-webkit-mask-image:linear-gradient(90deg,transparent 40%,#000);mask-image:linear-gradient(90deg,transparent 40%,#000)}
-[dir="rtl"] .nl__pattern{-webkit-mask-image:linear-gradient(270deg,transparent 40%,#000);mask-image:linear-gradient(270deg,transparent 40%,#000)}
 .nl > *{position:relative}
 .nl p{margin:10px 0 0;color:#D5E0DA;max-width:40ch}
 .nl__row{display:flex;gap:6px;background:#fff;border-radius:999px;padding:5px;max-width:480px}
@@ -498,7 +493,6 @@ html[lang="ar"] .post__title{line-height:1.5}
 .st{position:fixed;inset:0;z-index:85;background:#0B1412;display:grid;place-items:center;visibility:hidden;opacity:0;transition:opacity .2s,visibility 0s linear .2s}
 .st.is-open{visibility:visible;opacity:1;transition:opacity .2s}
 .st__frame{position:relative;width:min(420px,100vw);height:min(92vh,746px);border-radius:14px;overflow:hidden;background:radial-gradient(circle at 50% 38%,#1E5A4B 0,#0F3B33 45%,#0A2A24 100%);color:#fff;touch-action:manipulation;user-select:none}
-.st__pattern{position:absolute;inset:0;width:100%;height:100%;opacity:.08;pointer-events:none}
 .st__bars{position:absolute;top:10px;inset-inline:10px;display:flex;gap:4px;z-index:3}
 .st__seg{flex:1;height:2.5px;border-radius:2px;background:rgba(255,255,255,.35);overflow:hidden;position:relative}
 .st__seg i{position:absolute;top:0;bottom:0;inset-inline-start:0;width:0;background:#fff;border-radius:2px}
@@ -669,9 +663,6 @@ img.art-photo,video.art-video{display:block;width:100%;height:100%;object-fit:co
     <radialGradient id="g-pearl" cx=".36" cy=".3" r=".78">
       <stop offset="0" stop-color="#FFFFFF"/><stop offset=".55" stop-color="#F2EDE4"/><stop offset="1" stop-color="#CDC2B1"/>
     </radialGradient>
-    <pattern id="p-gold" width="56" height="56" patternUnits="userSpaceOnUse">
-      <g fill="none" stroke="#E9D293" stroke-width="1"><rect x="16" y="16" width="24" height="24"/><rect x="16" y="16" width="24" height="24" transform="rotate(45 28 28)"/><path d="M0 0L16 16M56 0L40 16M0 56L16 40M56 56L40 40"/></g>
-    </pattern>
     <pattern id="p-ink" width="56" height="56" patternUnits="userSpaceOnUse">
       <g fill="none" stroke="#0F3B33" stroke-width="1"><rect x="16" y="16" width="24" height="24"/><rect x="16" y="16" width="24" height="24" transform="rotate(45 28 28)"/><path d="M0 0L16 16M56 0L40 16M0 56L16 40M56 56L40 40"/></g>
     </pattern>
@@ -720,7 +711,6 @@ img.art-photo,video.art-video{display:block;width:100%;height:100%;object-fit:co
 <main id="main">
 
   <section class="hero" id="hero" aria-roledescription="carousel" aria-label="Featured" data-i18n-aria="aria_featured">
-    <svg class="hero__pattern" aria-hidden="true"><rect width="100%" height="100%" fill="url(#p-gold)"/></svg>
     <div class="container hero__in">
       <div class="slides">
         <div class="slide is-active" role="group" aria-roledescription="slide">
@@ -794,7 +784,6 @@ img.art-photo,video.art-video{display:block;width:100%;height:100%;object-fit:co
   <section class="sec">
     <div class="container ed">
       <div class="panel panel--emerald">
-        <svg class="panel__pattern" aria-hidden="true"><rect width="100%" height="100%" fill="url(#p-gold)"/></svg>
         <div>
           <h3 data-i18n="ed1_title"></h3>
           <p data-i18n="ed1_text"></p>
@@ -803,7 +792,6 @@ img.art-photo,video.art-video{display:block;width:100%;height:100%;object-fit:co
         <div class="panel__art" data-art="set|yellow|"></div>
       </div>
       <div class="panel panel--mint">
-        <svg class="panel__pattern" aria-hidden="true" style="opacity:.07"><rect width="100%" height="100%" fill="url(#p-ink)"/></svg>
         <div>
           <h3 data-i18n="ed2_title"></h3>
           <p data-i18n="ed2_text"></p>
@@ -869,7 +857,6 @@ img.art-photo,video.art-video{display:block;width:100%;height:100%;object-fit:co
   <section class="nlwrap" aria-labelledby="nlTitle">
     <div class="container">
       <div class="nl">
-        <svg class="nl__pattern" aria-hidden="true"><rect width="100%" height="100%" fill="url(#p-gold)"/></svg>
         <div>
           <h2 class="h2" id="nlTitle" data-i18n="nl_title"></h2>
           <p data-i18n="nl_text"></p>
@@ -1009,7 +996,6 @@ img.art-photo,video.art-video{display:block;width:100%;height:100%;object-fit:co
 
 <div class="st" id="story" role="dialog" aria-modal="true" data-i18n-aria="story" aria-hidden="true">
   <div class="st__frame" id="stFrame">
-    <svg class="st__pattern" aria-hidden="true"><rect width="100%" height="100%" fill="url(#p-gold)"/></svg>
     <div class="st__bars" id="stBars"></div>
     <div class="st__head"><span class="st__who" id="stWho"></span><button class="iconbtn st__x" type="button" data-st-close data-i18n-aria="aria_close"><span data-icon="close"></span></button></div>
     <div class="st__media" id="stMedia"></div>
@@ -1290,9 +1276,9 @@ const CATS = [
 const KW = {necklace:"necklace pendant قلادة", bracelet:"bracelet bangle سوار أسورة", earring:"earring hoops studs أقراط حلق", ring:"ring خاتم", set:"set bridal طقم عروس"};
 const WEIGHTS = [{w:1,p:.12},{w:2.5,p:.085},{w:5,p:.065},{w:10,p:.045},{w:20,p:.035},{w:31.1035,p:.03,oz:true},{w:50,p:.026},{w:100,p:.022}];
 const POSTS = [
-  {k:"post1", bg:"#0F3B33", pat:"p-gold", op:.14, art:() => '<g transform="rotate(-10 100 100)">' + ART.bar("yellow","10 g") + '</g>'},
+  {k:"post1", bg:"#0F3B33", art:() => '<g transform="rotate(-10 100 100)">' + ART.bar("yellow","10 g") + '</g>'},
   {k:"post2", bg:"#EFE6D6", pat:"p-ink",  op:.06, art:() => '<g transform="translate(-34 6) scale(.9)">' + ART.ring("yellow","signet") + '</g><g transform="translate(54 6) scale(.9)">' + ART.ring("rose","signet") + '</g>'},
-  {k:"post3", bg:"#E3ECE7", pat:"p-ink",  op:.06, art:() => ART.earring("white","stud")}
+  {k:"post3", bg:"#E3ECE7", art:() => ART.earring("white","stud")}
 ];
 
 /* ---------- State ---------- */
@@ -1374,7 +1360,7 @@ function renderPosts(){
   $("#posts").innerHTML = POSTS.map(p =>
     '<a class="post" href="#">' +
       '<div class="post__img"><svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true">' +
-        '<rect width="320" height="200" fill="' + p.bg + '"/><rect width="320" height="200" fill="url(#' + p.pat + ')" opacity="' + p.op + '"/>' +
+        '<rect width="320" height="200" fill="' + p.bg + '"/>' + (p.pat ? '<rect width="320" height="200" fill="url(#' + p.pat + ')" opacity="' + p.op + '"/>' : '') +
         '<svg x="70" y="5" width="180" height="190" viewBox="0 0 200 200">' + p.art() + '</svg>' +
       '</svg></div>' +
       '<div class="post__meta">' + t(p.k + "_meta") + '</div>' +
