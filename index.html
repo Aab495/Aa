@@ -559,6 +559,8 @@ html[lang="ar"] .post__title{line-height:1.5}
 .hero__video{object-fit:cover;transform:scaleX(-1)}
 [dir="rtl"] .hero__video{transform:none}
 .hero__video[hidden],.hero__canvas[hidden]{display:none}
+.hero__video{opacity:0;transition:opacity .6s ease}
+.hero.has-video .hero__video{opacity:1}
 .hero__shade{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .5s;background:linear-gradient(90deg,rgba(10,42,36,.9) 0%,rgba(10,42,36,.6) 50%,rgba(10,42,36,.2) 100%)}
 [dir="rtl"] .hero__shade{background:linear-gradient(270deg,rgba(10,42,36,.9) 0%,rgba(10,42,36,.6) 50%,rgba(10,42,36,.2) 100%)}
 .hero.has-video .hero__shade{opacity:1}
@@ -2132,24 +2134,46 @@ new IntersectionObserver(entries => {
   });
 }, {threshold: [0, .25, .5]}).observe(heroBox);
 document.addEventListener("visibilitychange", kickHero);
-heroVid.addEventListener("canplay", () => {
+// iPhone Safari only loads a video after play() is called on an element that is on the page,
+// so the video stays in the layout (transparent until it plays) and play() is called right away.
+let posterOk = false;
+function showHeroVideo(){
   if (useVideo) return;
   useVideo = true;
   heroBox.classList.add("has-video");
-  heroVid.hidden = false; heroCv.hidden = true;
-  if (!heroPaused && heroVisible) heroVid.play().catch(() => {});
-});
+  heroCv.hidden = true;
+}
+function showHeroStill(){
+  if (!posterOk || useVideo) return;   // no still frame either: keep the green animation
+  heroVid.poster = HERO_POSTER_SRC;
+  showHeroVideo();
+  // Autoplay was refused (for example Low Power Mode on iPhone): show the still and let ▶ start it.
+  heroPaused = true;
+  heroBtn.setAttribute("aria-pressed", true);
+  heroBtn.innerHTML = ic("play");
+  heroBtn.dataset.i18nAria = "play_motion";
+  heroBtn.setAttribute("aria-label", t("play_motion"));
+}
+heroVid.addEventListener("playing", showHeroVideo);
 const saveData = !!(navigator.connection && navigator.connection.saveData);
 const posterImg = new Image();
 posterImg.onload = () => {
+  posterOk = true;
   heroVid.poster = HERO_POSTER_SRC;
-  if (reduceMotion || saveData){
-    useVideo = true; heroBox.classList.add("has-video");
-    heroVid.hidden = false; heroCv.hidden = true; heroBtn.hidden = true;
-  }
+  if (reduceMotion || saveData){ heroVid.hidden = false; showHeroVideo(); heroBtn.hidden = true; }
 };
 posterImg.src = HERO_POSTER_SRC;
-if (!reduceMotion && !saveData && HERO_VIDEO_SRC) heroVid.src = HERO_VIDEO_SRC;
+if (!reduceMotion && !saveData && HERO_VIDEO_SRC){
+  heroVid.hidden = false;
+  heroVid.muted = true;
+  heroVid.autoplay = true;
+  heroVid.src = HERO_VIDEO_SRC;
+  const firstPlay = heroVid.play();
+  if (firstPlay && firstPlay.catch) firstPlay.catch(() => {
+    if (useVideo) return;
+    if (posterOk) showHeroStill(); else posterImg.addEventListener("load", showHeroStill, {once: true});
+  });
+}
 sizeHero(); drawHero(0); setHeroPaused(heroPaused);
 
 /* ---------- Shop footage (used for each store's story) ---------- */
