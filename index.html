@@ -95,7 +95,7 @@ section[id],footer[id]{scroll-margin-top:84px}
 .langbtn .i{width:16px;height:16px}
 
 /* Header */
-.hdr{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.97);border-bottom:1px solid var(--line)}
+.hdr{position:sticky;top:0;z-index:40;background:#fff;border-bottom:1px solid var(--line)}
 .hdr__in{display:flex;align-items:center;gap:24px;height:76px}
 .logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--emerald);flex:none}
 .logo svg{width:36px;height:40px}
@@ -399,7 +399,7 @@ html[lang="ar"] .post__title{line-height:1.5}
 /* Store profile */
 .profile{position:fixed;inset:0;z-index:45;background:#fff;overflow-y:auto;overscroll-behavior:contain;visibility:hidden;opacity:0;transition:opacity .25s,visibility 0s linear .25s}
 .profile.is-open{visibility:visible;opacity:1;transition:opacity .25s}
-.pf__bar{position:sticky;top:0;z-index:2;background:rgba(255,255,255,.97);border-bottom:1px solid var(--line)}
+.pf__bar{position:sticky;top:0;z-index:2;background:#fff;border-bottom:1px solid var(--line)}
 .pf__bar-in{max-width:975px;margin-inline:auto;padding:0 12px;height:60px;display:flex;align-items:center;gap:6px}
 .pf__bartitle{flex:1;display:flex;align-items:center;gap:6px;font-weight:600;font-size:17px;min-width:0}
 .pf__bartitle > span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -621,7 +621,7 @@ img.art-photo,video.art-video{display:block;width:100%;height:100%;object-fit:co
   .price{font-size:15px}
   .card__name{font-size:15px}
   .sec,.nlwrap{padding-block:48px}
-  .chat span{display:none}
+  .chat span[data-i18n]{display:none}
   .chat{width:52px;padding:0;justify-content:center}
   .toast{bottom:86px}
 }
@@ -935,7 +935,7 @@ img.art-photo,video.art-video{display:block;width:100%;height:100%;object-fit:co
   </div>
 </footer>
 
-<button class="chat" type="button" data-toast="chat_demo"><span data-icon="chat"></span><span data-i18n="chat"></span></button>
+<button class="chat" type="button" data-toast="chat_demo" data-i18n-aria="chat"><span data-icon="chat"></span><span data-i18n="chat"></span></button>
 
 <div class="scrim" id="scrim" data-close></div>
 
