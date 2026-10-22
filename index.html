@@ -490,7 +490,7 @@ html[lang="ar"] .post__title{line-height:1.5}
 .pm__buy{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 8px;margin-top:8px;border-top:1px solid var(--line)}
 .pm__buy .price{font-size:18px}
 .pm__form{display:flex;align-items:center;gap:8px;border-top:1px solid var(--line);padding:6px 8px 0}
-.pm__form input{flex:1;min-width:0;border:0;outline:0;font-size:14px;padding:10px 0;background:transparent;color:var(--ink)}
+.pm__form input{flex:1;min-width:0;border:0;outline:0;font-size:16px;padding:10px 0;background:transparent;color:var(--ink)}
 .pm__form button{border:0;background:none;color:var(--emerald);font:600 14px var(--font-body);cursor:pointer;padding:6px}
 .pm__form button:disabled{opacity:.4;cursor:default}
 
@@ -2080,8 +2080,15 @@ renderPost = function(){
   const m = $("#post .pm__media"), img = m && m.querySelector("img.art-photo");
   if (!img) return;
   img.insertAdjacentHTML("afterend", pvVideoTag(k));
-  m.insertAdjacentHTML("beforeend", '<button class="iconbtn pm__vbtn" type="button" data-pvbtn aria-label="' + t(productStill ? "play_video" : "pause_video") + '">' + ic(productStill ? "play" : "pause") + '</button>');
+  m.insertAdjacentHTML("beforeend", '<button class="iconbtn pm__vbtn" type="button" data-pvbtn aria-label="' + t("play_video") + '">' + ic("play") + '</button>');
 };
+// Keep the play/pause button in step with the video (autoplay can be refused, e.g. iPhone Low Power Mode)
+function syncPvBtn(){
+  const v = $("#post video[data-pvideo]"), b = $("#post [data-pvbtn]"); if (!v || !b) return;
+  b.innerHTML = ic(v.paused ? "play" : "pause");
+  b.setAttribute("aria-label", t(v.paused ? "play_video" : "pause_video"));
+}
+["play", "pause"].forEach(ev => document.addEventListener(ev, e => { if (e.target.closest && e.target.closest("#post")) syncPvBtn(); }, true));
 const baseRenderStoryFrame = renderStoryFrame;
 renderStoryFrame = function(){
   baseRenderStoryFrame();
@@ -2107,9 +2114,7 @@ document.addEventListener("click", e => {
   const b = e.target.closest("[data-pvbtn]"); if (!b) return;
   e.stopPropagation();
   const v = $("#post video[data-pvideo]"); if (!v) return;
-  if (v.paused) v.play().catch(() => {}); else v.pause();
-  b.innerHTML = ic(v.paused ? "play" : "pause");
-  b.setAttribute("aria-label", t(v.paused ? "play_video" : "pause_video"));
+  if (v.paused) v.play().catch(syncPvBtn); else v.pause();
 }, true);
 
 /* ---------- Shop video as each store's story (tap the store photo) ---------- */
