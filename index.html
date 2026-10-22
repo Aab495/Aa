@@ -553,29 +553,9 @@ html[lang="ar"] .post__title{line-height:1.5}
 
 .sr .av--md{width:56px;height:56px;font-size:24px}
 
-/* Hero motion background */
-.hero__media{position:absolute;inset:0;pointer-events:none}
-.hero__canvas,.hero__video{position:absolute;inset:0;width:100%;height:100%;display:block}
-.hero__video{object-fit:cover;transform:scaleX(-1)}
-[dir="rtl"] .hero__video{transform:none}
-.hero__video[hidden],.hero__canvas[hidden]{display:none}
-.hero__video{opacity:0;transition:opacity .6s ease}
-.hero.has-video .hero__video{opacity:1}
-.hero__shade{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .5s;background:linear-gradient(90deg,rgba(10,42,36,.9) 0%,rgba(10,42,36,.6) 50%,rgba(10,42,36,.2) 100%)}
-[dir="rtl"] .hero__shade{background:linear-gradient(270deg,rgba(10,42,36,.9) 0%,rgba(10,42,36,.6) 50%,rgba(10,42,36,.2) 100%)}
-.hero.has-video .hero__shade{opacity:1}
-.hero.has-video .hero__pattern{opacity:.05}
-.hero.has-video .slide__art{display:none}
-.hero.has-video .slide{grid-template-columns:minmax(0,640px)}
-.hero.has-video .hero__in{min-height:min(80vh,720px);display:flex;flex-direction:column;justify-content:flex-end}
-.hero__play{margin-inline-start:auto}
+/* Chat button steps aside while the green hero is on screen (phones) */
 .chat{transition:opacity .25s,transform .25s}
 .chat.is-away{opacity:0;pointer-events:none;transform:translateY(16px)}
-@media (max-width:960px){
-  .hero.has-video .hero__shade,[dir="rtl"] .hero.has-video .hero__shade{background:linear-gradient(180deg,rgba(10,42,36,.25) 0%,rgba(10,42,36,.6) 45%,rgba(10,42,36,.92) 100%)}
-  .hero.has-video .hero__in{min-height:82vh}
-  .hero__video,[dir="rtl"] .hero__video{transform:none;object-position:15% 50%;top:-22%;height:122%}
-}
 
 /* Product video posts */
 img.art-photo,video.art-video{display:block;width:100%;height:100%;object-fit:cover;object-position:6% 50%}
@@ -591,21 +571,6 @@ img.art-photo,video.art-video{display:block;width:100%;height:100%;object-fit:co
 
 /* Shop video story */
 .st__media video.st__shop{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:none}
-
-/* Hero video: ring render on black, blended into the green so only the ring shows */
-.hero{isolation:isolate}
-.hero__video,[dir="rtl"] .hero__video{object-fit:contain;transform:none;mix-blend-mode:screen}
-.hero__video{object-position:90% 50%}
-[dir="rtl"] .hero__video{object-position:10% 50%}
-.hero.has-video .hero__shade,[dir="rtl"] .hero.has-video .hero__shade{opacity:0}
-.hero.has-video .hero__pattern{opacity:.1}
-.hero.has-video .slide{grid-template-columns:minmax(0,min(600px,54%))}
-.hero.has-video .hero__in{min-height:min(78vh,700px);justify-content:center}
-@media (max-width:960px){
-  .hero__video,[dir="rtl"] .hero__video{object-fit:contain;object-position:50% 45%;top:0;height:56%}
-  .hero.has-video .slide{grid-template-columns:minmax(0,1fr)}
-  .hero.has-video .hero__in{min-height:84vh;justify-content:flex-end}
-}
 
 /* Responsive */
 @media (max-width:1200px){
@@ -744,11 +709,6 @@ img.art-photo,video.art-video{display:block;width:100%;height:100%;object-fit:co
 <main id="main">
 
   <section class="hero" id="hero" aria-roledescription="carousel" aria-label="Featured">
-    <div class="hero__media" aria-hidden="true">
-      <video class="hero__video" id="heroVideo" muted loop playsinline preload="auto" hidden></video>
-      <canvas class="hero__canvas" id="heroCanvas"></canvas>
-    </div>
-    <div class="hero__shade" aria-hidden="true"></div>
     <svg class="hero__pattern" aria-hidden="true"><rect width="100%" height="100%" fill="url(#p-gold)"/></svg>
     <div class="container hero__in">
       <div class="slides">
@@ -792,7 +752,6 @@ img.art-photo,video.art-video{display:block;width:100%;height:100%;object-fit:co
         <button class="iconbtn iconbtn--light" type="button" id="prevSlide" data-i18n-aria="prev"><span class="flip" data-icon="chevL"></span></button>
         <div class="dots" id="dots"></div>
         <button class="iconbtn iconbtn--light" type="button" id="nextSlide" data-i18n-aria="next"><span class="flip" data-icon="chev"></span></button>
-        <button class="iconbtn iconbtn--light hero__play" type="button" id="heroPlay" aria-pressed="false" data-i18n-aria="pause_motion"><span data-icon="pause"></span></button>
       </div>
     </div>
   </section>
@@ -2048,133 +2007,11 @@ function openBars(open){
 }
 $("#barsToggle").addEventListener("click", () => openBars(!$("#barsPanel").classList.contains("is-open")));
 
-/* ---------- Hero background: video when one is provided, gold-dust animation otherwise ---------- */
-Object.assign(D.en, {pause_motion:"Pause background", play_motion:"Play background"});
-Object.assign(D.ar, {pause_motion:"إيقاف الخلفية", play_motion:"تشغيل الخلفية"});
-// To use a video: put an MP4 named hero.mp4 next to this page (same folder). It replaces the animation automatically.
-const HERO_VIDEO_SRC = "hero.mp4", HERO_POSTER_SRC = "hero-poster.jpg";
-const heroBox = $("#hero"), heroCv = $("#heroCanvas"), heroVid = $("#heroVideo"), heroBtn = $("#heroPlay");
-const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
-const hctx = heroCv.getContext("2d");
-let heroPaused = reduceMotion, heroVisible = true, useVideo = false;
-let hW = 0, hH = 0, hDPR = 1, motes = [], hRaf = 0, hLast = 0, hClock = 0;
-const glowSprite = document.createElement("canvas");
-glowSprite.width = glowSprite.height = 64;
-(function(){
-  const g = glowSprite.getContext("2d"), r = g.createRadialGradient(32, 32, 0, 32, 32, 32);
-  r.addColorStop(0, "rgba(255,242,205,1)"); r.addColorStop(.22, "rgba(233,210,147,.75)"); r.addColorStop(1, "rgba(233,210,147,0)");
-  g.fillStyle = r; g.fillRect(0, 0, 64, 64);
-})();
-function newMote(anywhere){
-  return {x: Math.random() * hW, y: anywhere ? Math.random() * hH : hH + 12, r: .6 + Math.random() * 1.9,
-          vy: .1 + Math.random() * .36, ph: Math.random() * 6.283, fq: .5 + Math.random() * 1.5, sw: 6 + Math.random() * 16};
-}
-function sizeHero(){
-  const r = heroBox.getBoundingClientRect();
-  hDPR = Math.min(window.devicePixelRatio || 1, 2); hW = r.width; hH = r.height;
-  heroCv.width = Math.round(hW * hDPR); heroCv.height = Math.round(hH * hDPR);
-  const n = hW < 700 ? 40 : 75;
-  motes = Array.from({length: n}, () => newMote(true));
-}
-function drawHero(t){
-  hctx.setTransform(hDPR, 0, 0, hDPR, 0, 0);
-  hctx.clearRect(0, 0, hW, hH);
-  for (let i = 0; i < 3; i++){
-    const bx = hW * (.18 + .32 * i) + Math.sin(t * .07 + i * 2) * hW * .08;
-    const by = hH * (.3 + .25 * (i % 2)) + Math.cos(t * .05 + i) * hH * .08;
-    const br = Math.max(hW, hH) * (.24 + .06 * i);
-    const g = hctx.createRadialGradient(bx, by, 0, bx, by, br);
-    g.addColorStop(0, "rgba(233,210,147,.075)"); g.addColorStop(1, "rgba(233,210,147,0)");
-    hctx.fillStyle = g; hctx.fillRect(0, 0, hW, hH);
-  }
-  const ph = (t % 10) / 10, sx = -hW * .7 + ph * hW * 2.4;
-  const sg = hctx.createLinearGradient(sx, 0, sx + hW * .5, hH * .7);
-  sg.addColorStop(0, "rgba(255,236,190,0)"); sg.addColorStop(.5, "rgba(255,236,190,.1)"); sg.addColorStop(1, "rgba(255,236,190,0)");
-  hctx.fillStyle = sg; hctx.fillRect(0, 0, hW, hH);
-  hctx.globalCompositeOperation = "lighter";
-  motes.forEach(m => {
-    const x = m.x + Math.sin(t * .4 + m.ph) * m.sw;
-    hctx.globalAlpha = .3 + .7 * Math.abs(Math.sin(t * m.fq + m.ph));
-    const size = m.r * 7;
-    hctx.drawImage(glowSprite, x - size / 2, m.y - size / 2, size, size);
-  });
-  hctx.globalAlpha = 1; hctx.globalCompositeOperation = "source-over";
-}
-function heroLoop(now){
-  hRaf = 0;
-  const dt = hLast ? Math.min(now - hLast, 50) : 16; hLast = now;
-  if (!heroPaused){
-    hClock += dt / 1000;
-    motes.forEach((m, i) => { m.y -= m.vy * dt / 16; if (m.y < -12) motes[i] = newMote(false); });
-  }
-  drawHero(hClock);
-  if (!heroPaused && heroVisible && !useVideo && !document.hidden) hRaf = requestAnimationFrame(heroLoop);
-  else hLast = 0;
-}
-function kickHero(){ if (!hRaf && !useVideo) hRaf = requestAnimationFrame(heroLoop); }
-function setHeroPaused(p){
-  heroPaused = p;
-  heroBtn.setAttribute("aria-pressed", p);
-  heroBtn.innerHTML = ic(p ? "play" : "pause");
-  heroBtn.dataset.i18nAria = p ? "play_motion" : "pause_motion";
-  heroBtn.setAttribute("aria-label", t(heroBtn.dataset.i18nAria));
-  if (useVideo){ if (p) heroVid.pause(); else heroVid.play().catch(() => {}); }
-  else kickHero();
-}
-heroBtn.addEventListener("click", () => setHeroPaused(!heroPaused));
-if ("ResizeObserver" in window) new ResizeObserver(() => { sizeHero(); drawHero(hClock); }).observe(heroBox);
-else window.addEventListener("resize", () => { sizeHero(); drawHero(hClock); });
+/* ---------- Chat button: hide it on phones while the hero is on screen ---------- */
 const chatBtn = $(".chat");
 new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    heroVisible = e.isIntersecting;
-    chatBtn.classList.toggle("is-away", e.intersectionRatio > .25 && window.innerWidth <= 760);
-    if (useVideo){ if (heroVisible && !heroPaused) heroVid.play().catch(() => {}); else heroVid.pause(); }
-    else if (heroVisible) kickHero();
-  });
-}, {threshold: [0, .25, .5]}).observe(heroBox);
-document.addEventListener("visibilitychange", kickHero);
-// iPhone Safari only loads a video after play() is called on an element that is on the page,
-// so the video stays in the layout (transparent until it plays) and play() is called right away.
-let posterOk = false;
-function showHeroVideo(){
-  if (useVideo) return;
-  useVideo = true;
-  heroBox.classList.add("has-video");
-  heroCv.hidden = true;
-}
-function showHeroStill(){
-  if (!posterOk || useVideo) return;   // no still frame either: keep the green animation
-  heroVid.poster = HERO_POSTER_SRC;
-  showHeroVideo();
-  // Autoplay was refused (for example Low Power Mode on iPhone): show the still and let ▶ start it.
-  heroPaused = true;
-  heroBtn.setAttribute("aria-pressed", true);
-  heroBtn.innerHTML = ic("play");
-  heroBtn.dataset.i18nAria = "play_motion";
-  heroBtn.setAttribute("aria-label", t("play_motion"));
-}
-heroVid.addEventListener("playing", showHeroVideo);
-const saveData = !!(navigator.connection && navigator.connection.saveData);
-const posterImg = new Image();
-posterImg.onload = () => {
-  posterOk = true;
-  heroVid.poster = HERO_POSTER_SRC;
-  if (reduceMotion || saveData){ heroVid.hidden = false; showHeroVideo(); heroBtn.hidden = true; }
-};
-posterImg.src = HERO_POSTER_SRC;
-if (!reduceMotion && !saveData && HERO_VIDEO_SRC){
-  heroVid.hidden = false;
-  heroVid.muted = true;
-  heroVid.autoplay = true;
-  heroVid.src = HERO_VIDEO_SRC;
-  const firstPlay = heroVid.play();
-  if (firstPlay && firstPlay.catch) firstPlay.catch(() => {
-    if (useVideo) return;
-    if (posterOk) showHeroStill(); else posterImg.addEventListener("load", showHeroStill, {once: true});
-  });
-}
-sizeHero(); drawHero(0); setHeroPaused(heroPaused);
+  entries.forEach(e => chatBtn.classList.toggle("is-away", e.intersectionRatio > .25 && window.innerWidth <= 760));
+}, {threshold: [0, .25, .5]}).observe($("#hero"));
 
 /* ---------- Shop footage (used for each store's story) ---------- */
 Object.assign(D.en, {pause_video:"Pause video", play_video:"Play video"});
